@@ -1,49 +1,99 @@
 import React from "react";
 import styled from "styled-components";
+import {
+  selectUserName,
+  selectUserPhoto,
+  setUserLogin,
+} from "../features/user/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { auth, provider } from "../firebase";
 
 function Header() {
+  const dispatch = useDispatch();
+  const userName = useSelector(selectUserName);
+  const userPhoto = useSelector(selectUserPhoto);
+
+  const signIn = () => {
+    auth.signInWithPopup(provider).then((result) => {
+      let user = result.user;
+      console.log(user);
+
+      dispatch(
+        setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        })
+      );
+    });
+  };
+
   return (
     <Nav>
       <Logo src={process.env.PUBLIC_URL + "/images/logo.png"} />
-      <NavMenu>
-        <a href="/#" style={{ color: "white", textDecoration: "none" }}>
-          <img alt="" src={process.env.PUBLIC_URL + "/images/home-icon.png"} />
-          <span>HOME</span>
-        </a>
-        <a href="/#" style={{ color: "white", textDecoration: "none" }}>
-          <img
-            alt=""
-            src={process.env.PUBLIC_URL + "/images/search-icon.png"}
-          />
-          <span>SEARCH</span>
-        </a>
-        <a href="/satellite" style={{ color: "white", textDecoration: "none" }}>
-          <img
-            alt=""
-            src={process.env.PUBLIC_URL + "/images/satellite-icon.png"}
-          />
-          <span>SATELLITE</span>
-        </a>
-        <a href="/tropical" style={{ color: "white", textDecoration: "none" }}>
-          <img
-            alt=""
-            src={process.env.PUBLIC_URL + "/images/models-icon.png"}
-          />
-          <span>TROPICAL</span>
-        </a>
-        <a href="/severe" style={{ color: "white", textDecoration: "none" }}>
-          <img
-            alt=""
-            src={process.env.PUBLIC_URL + "/images/severe-icon.png"}
-          />
-          <span>SEVERE</span>
-        </a>
-        <a href="/about" style={{ color: "white", textDecoration: "none" }}>
-          <img alt="" src={process.env.PUBLIC_URL + "/images/about-icon.png"} />
-          <span>ABOUT</span>
-        </a>
-      </NavMenu>
-      <UserImg src={process.env.PUBLIC_URL + "/images/avatar.jpg"} />
+
+      {!userName ? (
+        <LoginContainer>
+          <Login onClick={signIn}>Sign In</Login>
+        </LoginContainer>
+      ) : (
+        <>
+          <NavMenu>
+            <a href="/#" style={{ color: "white", textDecoration: "none" }}>
+              <img
+                alt=""
+                src={process.env.PUBLIC_URL + "/images/home-icon.png"}
+              />
+              <span>HOME</span>
+            </a>
+            <a href="/#" style={{ color: "white", textDecoration: "none" }}>
+              <img
+                alt=""
+                src={process.env.PUBLIC_URL + "/images/search-icon.png"}
+              />
+              <span>SEARCH</span>
+            </a>
+            <a
+              href="/satellite"
+              style={{ color: "white", textDecoration: "none" }}
+            >
+              <img
+                alt=""
+                src={process.env.PUBLIC_URL + "/images/satellite-icon.png"}
+              />
+              <span>SATELLITE</span>
+            </a>
+            <a
+              href="/tropical"
+              style={{ color: "white", textDecoration: "none" }}
+            >
+              <img
+                alt=""
+                src={process.env.PUBLIC_URL + "/images/models-icon.png"}
+              />
+              <span>TROPICAL</span>
+            </a>
+            <a
+              href="/severe"
+              style={{ color: "white", textDecoration: "none" }}
+            >
+              <img
+                alt=""
+                src={process.env.PUBLIC_URL + "/images/severe-icon.png"}
+              />
+              <span>SEVERE</span>
+            </a>
+            <a href="/about" style={{ color: "white", textDecoration: "none" }}>
+              <img
+                alt=""
+                src={process.env.PUBLIC_URL + "/images/about-icon.png"}
+              />
+              <span>ABOUT</span>
+            </a>
+          </NavMenu>
+          <UserImg src={process.env.PUBLIC_URL + "/images/avatar.jpg"} />
+        </>
+      )}
     </Nav>
   );
 }
@@ -113,4 +163,27 @@ const UserImg = styled.img`
   height: 48px;
   border-radius: 50%;
   cursor: pointer;
+`;
+
+const Login = styled.div`
+  border: 1px solid #f9f9f9;
+  padding: 8px 16px;
+  border-radius: 4px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease 0s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f9f9f9;
+    color: #000;
+    border-color: transparent;
+  }
+`;
+
+const LoginContainer = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 `;
