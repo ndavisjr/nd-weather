@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import bookmarkReducer from '../features/bookmark/bookmarkSlice'
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    bookmark: bookmarkReducer,
   },
 });
