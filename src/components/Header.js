@@ -109,10 +109,7 @@ function Header() {
               <span>ABOUT</span>
             </a>
           </NavMenu>
-          <UserImg
-            onClick={signOut}
-            src={process.env.PUBLIC_URL + "/images/avatar.jpg"}
-          />
+          <UserImg onClick={signOut} src={userPhoto} />
         </>
       )}
     </Nav>
