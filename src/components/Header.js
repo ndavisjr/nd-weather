@@ -1,23 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import {
   selectUserName,
   selectUserPhoto,
   setUserLogin,
+  setSignOut,
 } from "../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { auth, provider } from "../firebase";
+import { useHistory } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
+  const history = useHistory();
   const userName = useSelector(selectUserName);
   const userPhoto = useSelector(selectUserPhoto);
+
+  useEffect(() => {
+    // state is gone when refreshed so we need to persist thru a page refresh
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        dispatch(
+          setUserLogin({
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+          })
+        );
+      }
+    });
+  }, []);
 
   const signIn = () => {
     auth.signInWithPopup(provider).then((result) => {
       let user = result.user;
-      console.log(user);
-
       dispatch(
         setUserLogin({
           name: user.displayName,
@@ -25,6 +41,14 @@ function Header() {
           photo: user.photoURL,
         })
       );
+      history.push("/");
+    });
+  };
+
+  const signOut = () => {
+    auth.signOut().then(() => {
+      dispatch(setSignOut());
+      history.push("/login");
     });
   };
 
@@ -46,13 +70,7 @@ function Header() {
               />
               <span>HOME</span>
             </a>
-            <a href="/#" style={{ color: "white", textDecoration: "none" }}>
-              <img
-                alt=""
-                src={process.env.PUBLIC_URL + "/images/search-icon.png"}
-              />
-              <span>SEARCH</span>
-            </a>
+
             <a
               href="/satellite"
               style={{ color: "white", textDecoration: "none" }}
@@ -91,7 +109,10 @@ function Header() {
               <span>ABOUT</span>
             </a>
           </NavMenu>
-          <UserImg src={process.env.PUBLIC_URL + "/images/avatar.jpg"} />
+          <UserImg
+            onClick={signOut}
+            src={process.env.PUBLIC_URL + "/images/avatar.jpg"}
+          />
         </>
       )}
     </Nav>
