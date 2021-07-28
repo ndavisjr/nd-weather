@@ -1,10 +1,13 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
+## Demo
+https://davisweather-88e35.web.app/
+
 ## Using:
 
 React JS, Redux (actions, reducers), Styled Components, React Slick, React Router Dom, Firebase
 
-## Install commands:
+## Install commands used:
 
 npx create-react-app ./ --template redux<br />
 npm install styled-components react-slick slick-carousel react-router-dom firebase firebase-tools
